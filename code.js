@@ -1,9 +1,9 @@
-/* 	Trillium next widget
-    Show Attributes for books as a cloud v20250214.01
+/* Trillium next notes widget
+   Show label attributes for books as a cloud v20250215.01
 
-	To activate add attribute #showCloud to the book
+   To activate add attribute #showCloud to the book
 
-    2025 by Holger Wolff under BSD 3-clause licence */
+   2025 by Holger Wolff under BSD 3-clause licence */
 
 class AttributeListWidget extends api.NoteContextAwareWidget {
     get parentWidget() { return "right-pane" }
@@ -12,7 +12,7 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
     
     constructor(name, age) {
         super();
-        console.log(">constructor");
+		console.log(">constructor");
         this.$filterMap = new Map();
         this.$buttonHandlerAttached = false;
         this.$CloudSortAttributeByWeight = CloudDefaultSortAttributeByWeight;
@@ -22,9 +22,9 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         var note = api.getActiveContextNote();
         console.log(">isEnabled", note);
         return super.isEnabled() 
-            && note != null
+        	&& note != null
             && note.type === 'book'
-            && note.hasLabel(CloudActivateAttribute);
+        	&& note.hasLabel(CloudActivateAttribute);
     }
 
     doRender() {
@@ -43,9 +43,9 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         this.$baseNoteId = note.noteId;
         this.attachButtonHandler();
         
-        await this.updateAttributeMap(note);
+		await this.updateAttributeMap(note);
 
-        this.updateAttributeCloud();
+		this.updateAttributeCloud();
         this.filterUpdate();
     }
     
@@ -130,7 +130,7 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
 
         baseChilds.forEach(async (child) => {
             var childAttributes = child.getOwnedAttributes();
-            var attributeNames = this.getAttributeNames(childAttributes);
+            var attributeNames = this.getLabelAttributeNames(childAttributes);
             var hasAdd = this.hasAttributes(attributeNames, addFilter);
             var hasDel = delFilter.length != 0 && this.hasAttributes(attributeNames, delFilter);
             if (hasDel) delCount++;
@@ -171,11 +171,11 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         else this.$attributeMap = myMap;
     }
     
-    getAttributeNames(attributes) {
+    getLabelAttributeNames(attributes) {
         var attNames = [];
         attributes.forEach((att) => {
             var name = att.name.toLowerCase();
-            if (!attNames.includes(name)) attNames.push(name);
+            if (!attNames.includes(name) && att.type == "label") attNames.push(name);
         });
         
         return attNames;
@@ -226,7 +226,7 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
 
         var found = await api.searchForNotes(search);
         
-        this.$attributeResult[0].innerHTML="";
+		this.$attributeResult[0].innerHTML="";
         found.forEach((element) => {
             if (this.$baseNoteId != element.noteId){
                 var iconSpan = document.createElement("span");
@@ -272,100 +272,100 @@ const CloudFilter = true;
 
 const HTML = `<div id="cloudBase">
     <div class="cloudTitle">
-        <span style="text-wrap-mode:nowrap;">Filter:</span>
-        <input class="cloudTitle" type="text"></input>
-        <span class="bx bx-refresh cloudTitle" style="right: 20px;"></span>
+    	<span style="text-wrap-mode:nowrap;">Filter:</span>
+    	<input class="cloudTitle" type="text"></input>
+    	<span class="bx bx-refresh cloudTitle" style="right: 20px;"></span>
         <span class="bx bx-sort cloudTitle" style="right: 50px;"></span>
     </div>
     <div class="cloudList"><ul class="cloudList" role="navigation"></ul></div>
-    <div class="cloudResult"><ul class="cloudResult"></ul></div>
+	<div class="cloudResult"><ul class="cloudResult"></ul></div>
 </div>`;
 
 const CSS = `
 #cloudBase {
-    padding: 10px;
-    border-top: 1px solid var(--main-border-color);
-    height: 100%;
-    background-color: var(--input-background-color);
-    display: flex;
-    flex-direction: column;
+  padding: 10px;
+  border-top: 1px solid var(--main-border-color);
+  height: 100%;
+  background-color: var(--input-background-color);
+  display: flex;
+  flex-direction: column;
 }
 
 .cloudTitle {
-    height: 30px;
-    padding: 10px 0;
-    font-size: large;
-    display: flex;
-    align-items: center;
-    width: 100%;
+  height: 30px;
+  padding: 10px 0;
+  font-size: large;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .cloudTitle input.cloudTitle {
-    flex-grow: 1;
-    border: 1px solid #ccc;
-    margin: 10px;
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  margin: 10px;
 }
 
 .cloudTitle span.cloudTitle {
-    width: 20px;
-    height: 30px;
-    background-color: transparent;
-    color: var(--main-text-color);
-    cursor: pointer;
-    margin-left: 5px;
+  width: 20px;
+  height: 30px;
+  background-color: transparent;
+  color: var(--main-text-color);
+  cursor: pointer;
+  margin-left: 5px;
 }
 
 div.cloudList {
-    overflow: scroll;
-    padding-left: 0px;
+  overflow: scroll;
+  padding-left: 0px;
 
-    flex: 1;
-    width: 100%
-    min-height: 0px;
-    min-width: 0px;
+  flex: 1;
+  width: 100%
+  min-height: 0px;
+  min-width: 0px;
 }
 
 ul.cloudList {
-    list-style: none;
-    padding-left: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    line-height: 2.5rem;
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  line-height: 2.5rem;
 }
 
 div.cloudResult {
-    overflow: scroll;
-    padding-left: 0px;
+  overflow: scroll;
+  padding-left: 0px;
 
-    flex: 1;
-    width: 100%;
-    min-height: 0px;
-    min-width: 0px;
+  flex: 1;
+  width: 100%;
+  min-height: 0px;
+  min-width: 0px;
 }
 
 ul.cloudResult {
-    padding-left: 0px;
+  padding-left: 0px;
 }
 
 ul.cloudList a {
-    --size: 4;
-    font-size: calc(var(--size) * 0.25rem + 0.5rem) !important;
-    color: white;
-    display: block;
-    font-size: 1.5rem;
-    padding: 0.125rem 0.25rem;
-    text-decoration: none;
-    position: relative;
+  --size: 4;
+  font-size: calc(var(--size) * 0.25rem + 0.5rem) !important;
+  color: var(--main-text-color);
+  display: block;
+  font-size: 1.5rem;
+  padding: 0.125rem 0.25rem;
+  text-decoration: none;
+  position: relative;
 }
 
 ul.cloudList a[state="add"] {
-    color: green;
+  color: green;
 }
 
 ul.cloudList a[state="del"] {
-    color: red;
+  color: red;
 }
 
 ul.cloudList a[data-weight="1"] { --size: 1; }
@@ -379,8 +379,8 @@ ul.cloudList a[data-weight="8"] { --size: 8; }
 ul.cloudList a[data-weight="9"] { --size: 9; }
 
 ul.cloudList[data-show-value] a::after {
-    content: " (" attr(data-count) ")";
-    font-size: 1rem;
+  content: " (" attr(data-count) ")";
+  font-size: 1rem;
 }`
 
 module.exports = new AttributeListWidget();
