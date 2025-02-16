@@ -1,5 +1,5 @@
 /* Trillium next notes widget
-   Show label attributes for books as a cloud v20250215.01
+   Show label attributes for books as a cloud v20250216.01
 
    To activate add attribute #showCloud to the book
 
@@ -16,6 +16,8 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         this.$filterMap = new Map();
         this.$buttonHandlerAttached = false;
         this.$CloudSortAttributeByWeight = CloudDefaultSortAttributeByWeight;
+        this.$CloudIgnoredAttributes = [];
+        this.$CloudShowCount = CloudDefaultShowCount;
     }
 
     isEnabled() {
@@ -43,17 +45,36 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         this.$baseNoteId = note.noteId;
         this.attachButtonHandler();
         
+        this.updateCloudIgnoredAttributes(note);
+        this.updateShowCount(note);
 		await this.updateAttributeMap(note);
 
 		this.updateAttributeCloud();
         this.filterUpdate();
     }
+
+    updateCloudIgnoredAttributes (note) {
+        this.$CloudIgnoredAttributes.length = 0;
+        this.$CloudIgnoredAttributes.push(...CloudDefaultIgnoredAttributes);
+        if (note.hasLabel(CloudActivateAttribute)) {
+            var toIgnored = note.getLabels(CloudIgnoredAttribute);
+            toIgnored.forEach((att) => {
+                this.$CloudIgnoredAttributes.push(att.value.toLowerCase());
+            });
+        }
+        console.log("<updateCloudIgnoredAttributes", this.$CloudIgnoredAttributes);
+    }
     
+    updateShowCount(note) {
+        if (note.hasLabel(CloudFlipShowCount)) this.$CloudShowCount = !CloudDefaultShowCount
+        else this.$CloudShowCount = CloudDefaultShowCount;
+    }
+
     updateAttributeCloud() {
         const myClass = this;
 
         this.$attributeCloud[0].innerHTML="";
-        if (CloudShowCount) this.$attributeCloud[0].setAttribute("data-show-value", '')
+        if (this.$CloudShowCount) this.$attributeCloud[0].setAttribute("data-show-value", '')
         else this.$attributeCloud[0].removeAttribute("data-show-value")
 
         var filter = [];
@@ -138,7 +159,7 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
 
             if ((hasAdd && !hasDel) || filter.length == 0) {
                 attributeNames.forEach(async (att) => {
-                    if (!CloudIgnoredAttributes.includes(att)) {
+                    if (!this.$CloudIgnoredAttributes.includes(att)) {
                         if (!myMap.has(att))
                             myMap.set(att, 0);
 
@@ -265,10 +286,13 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
 }
 
 const CloudActivateAttribute = "showCloud";
-const CloudIgnoredAttributes = [CloudActivateAttribute.toLowerCase(), "author", "viewtype"];
-const CloudDefaultSortAttributeByWeight = false;
-const CloudShowCount = true;
+const CloudIgnoredAttribute = "cloudIgnore";
+const CloudFlipShowCount = "cloudFlipShowCount";
 const CloudFilter = true;
+
+const CloudDefaultIgnoredAttributes = [CloudActivateAttribute.toLowerCase(), CloudIgnoredAttribute.toLowerCase(), CloudFlipShowCount.toLowerCase(), "viewtype"];
+const CloudDefaultSortAttributeByWeight = false;
+const CloudDefaultShowCount = true;
 
 const HTML = `<div id="cloudBase">
     <div class="cloudTitle">

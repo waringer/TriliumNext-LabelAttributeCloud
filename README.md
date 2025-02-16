@@ -11,6 +11,21 @@ Written for TrilliumNext Notes v0.91.6
 ## Using
 To activate the widget add the attribute #showCloud to the book you want to show the tag cloud on the right.
 
-* If you prefer not to see the count for the attributes you can set the variable "CloudShowCount" to false
-* To change the default sorting of the cloud from sort by name to sort by weigth change the variable "CloudDefaultSortAttributeByWeight" to true
-* To hide a attribute in the cloud add it to the variable "CloudIgnoredAttributes"
+### Attributes
+The Widget uses the following attributes for control:
+* "#showCloud": Activates the widget on the book [default: off]
+* "#cloudIgnore": Adds the value to the list of ignored attributes (can used multiple times) [default: "viewType" and all control attributes of this widget]
+* "#cloudFlipShowCount": Changes the default behavior for showing the attribute count to the opposite [default: show count]
+
+### In code variables/constants
+This is for advanced users who know how to change code and want to tweak the widget. Any changes here will affect the control [Attributes](#Attributes).
+
+The following in code constants can be edited to change the default behavior:
+* "CloudDefaultShowCount": Show the count for the attributes
+* "CloudDefaultSortAttributeByWeight": Set the default sorting of the cloud to sort by weight (true) or by name (false)
+* "CloudDefaultIgnoredAttributes": Hide this attributes in the cloud (needs to be in lowercase!)
+
+This constants defines the names of the attributes the widget uses for control:
+* "CloudActivateAttribute": Name of the attribute to activate the widget
+* "CloudIgnoredAttribute": Name of the attribute for additional attributes to ignore
+* "CloudFlipShowCount": Name of the attribute to flip the default of CloudDefaultShowCount
