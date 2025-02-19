@@ -1,5 +1,5 @@
 /* Trillium next notes widget
-   Show label attributes for books as a cloud v20250216.01
+   Show label attributes for books as a cloud v20250219.01
 
    To activate add attribute #showCloud to the book
 
@@ -340,7 +340,7 @@ const CSS = `
 }
 
 div.cloudList {
-  overflow: scroll;
+  overflow: auto;
   padding-left: 0px;
 
   flex: 1;
@@ -360,7 +360,7 @@ ul.cloudList {
 }
 
 div.cloudResult {
-  overflow: scroll;
+  overflow: auto;
   padding-left: 0px;
 
   flex: 1;
