@@ -3,6 +3,9 @@ Show Label Attributes for books as a tag cloud with search and filter options on
 
 Written for TrilliumNext Notes v0.91.6
 
+## Sample Image
+![Sample image](sample.webp)
+
 ## How to install
 * Create a code note of type JS frontend and give it a #widget label 
 * Copy the text of code.js in it

@@ -3,7 +3,7 @@
 
    To activate add attribute #showCloud to the book
 
-   2025 by Holger Wolff under BSD 3-clause licence */
+   2025 by Holger Wolff under BSD 3-clause license */
 
 class AttributeListWidget extends api.NoteContextAwareWidget {
     get parentWidget() { return "right-pane" }
