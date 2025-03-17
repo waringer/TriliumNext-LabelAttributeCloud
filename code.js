@@ -1,16 +1,16 @@
 /* Trillium next notes widget
-   Show label attributes for books as a cloud v20250219.01
+   Show label attributes for books as a cloud v20250317.01
 
    To activate add attribute #showCloud to the book
 
    2025 by Holger Wolff under BSD 3-clause license */
 
-class AttributeListWidget extends api.NoteContextAwareWidget {
+   class AttributeListWidget extends api.NoteContextAwareWidget {
     get parentWidget() { return "right-pane" }
     
     get position() { return 1; }
     
-    constructor(name, age) {
+    constructor() {
         super();
 		console.log(">constructor");
         this.$filterMap = new Map();
@@ -21,12 +21,15 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
     }
 
     isEnabled() {
-        var note = api.getActiveContextNote();
-        console.log(">isEnabled", note);
-        return super.isEnabled() 
-        	&& note != null
-            && note.type === 'book'
-        	&& note.hasLabel(CloudActivateAttribute);
+        console.log(">isEnabled");
+        if (super.isEnabled()) {
+            var note = api.getActiveContextNote();
+            console.log(">isEnabled", note);
+            return super.isEnabled() 
+                && note != null
+                && note.type === 'book'
+                && note.hasLabel(CloudActivateAttribute);
+        } else return false;
     }
 
     doRender() {
@@ -35,7 +38,6 @@ class AttributeListWidget extends api.NoteContextAwareWidget {
         this.cssBlock(CSS);
         this.$attributeCloud = this.$widget.find('ul.cloudList');
         this.$attributeResult = this.$widget.find('ul.cloudResult');
-        return this.$widget;
     }
 
     async refreshWithNote() {
