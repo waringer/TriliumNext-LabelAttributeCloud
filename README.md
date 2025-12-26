@@ -1,7 +1,9 @@
 # TriliumNext Notes Label Attribute Cloud Widget
 Show Label Attributes for books as a tag cloud with search and filter options on the right
 
-Written for TrilliumNext Notes v0.91.6
+Written for TrilliumNext Notes v0.91.6 to v0.100.0
+
+# **Currently broken for v.101.0 and newer**
 
 ## Sample Image
 ![Sample image](sample.webp)
