@@ -1,30 +1,29 @@
 /* Trillium next notes widget
-   Show label attributes for books as a cloud v20250317.01
+   Show label attributes for books as a cloud v20251226.01
 
    To activate add attribute #showCloud to the book
 
    2025 by Holger Wolff under BSD 3-clause license */
 
-   class AttributeListWidget extends api.NoteContextAwareWidget {
-    get parentWidget() { return "right-pane" }
-    
+class AttributeListWidget extends api.RightPanelWidget {
+    get parentWidget() { return "right-pane" }    
     get position() { return 1; }
+    get widgetTitle() {return "Attribute Cloud"; }
     
     constructor() {
         super();
-		console.log(">constructor");
+		// console.log(">constructor [AttributeListWidget]");
         this.$filterMap = new Map();
-        this.$buttonHandlerAttached = false;
         this.$CloudSortAttributeByWeight = CloudDefaultSortAttributeByWeight;
         this.$CloudIgnoredAttributes = [];
         this.$CloudShowCount = CloudDefaultShowCount;
     }
 
     isEnabled() {
-        console.log(">isEnabled");
+        // console.log(">isEnabled [AttributeListWidget]");
         if (super.isEnabled()) {
             var note = api.getActiveContextNote();
-            console.log(">isEnabled", note);
+            // console.log(">isEnabled [AttributeListWidget]", note);
             return super.isEnabled() 
                 && note != null
                 && note.type === 'book'
@@ -32,17 +31,18 @@
         } else return false;
     }
 
-    doRender() {
-        console.log(">doRender");
-        this.$widget = $(HTML);
+    async doRenderBody() {
+        // console.log(">doRenderBody [AttributeListWidget]");
+        var content = $(HTML);
         this.cssBlock(CSS);
-        this.$attributeCloud = this.$widget.find('ul.cloudList');
-        this.$attributeResult = this.$widget.find('ul.cloudResult');
+        this.$attributeCloud = content.find('ul.cloudList');
+        this.$attributeResult = content.find('ul.cloudResult');
+        this.$widget = content;
     }
 
     async refreshWithNote() {
         var note = api.getActiveContextNote();
-        console.log(">refreshWithNote", note);
+        // console.log(">refreshWithNote [AttributeListWidget]", note);
         this.$baseNoteTitle = note.title;
         this.$baseNoteId = note.noteId;
         this.attachButtonHandler();
@@ -64,7 +64,7 @@
                 this.$CloudIgnoredAttributes.push(att.value.toLowerCase());
             });
         }
-        console.log("<updateCloudIgnoredAttributes", this.$CloudIgnoredAttributes);
+        // console.log("<updateCloudIgnoredAttributes", this.$CloudIgnoredAttributes);
     }
     
     updateShowCount(note) {
@@ -109,31 +109,36 @@
     }
     
     attachButtonHandler() {
-        if (this.$buttonHandlerAttached == false) {
-            const myClass = this;
-            var reloadButton = $("span.cloudTitle.bx-refresh")[0];
+        const myClass = this;
+        var reloadButton = $("span.cloudTitle.bx-refresh")[0];
+        if (reloadButton.getAttribute("data-event") === null) {
             reloadButton.addEventListener("click", function(){ 
                 myClass.$filterMap.set(myClass.$baseNoteId, []);
                 myClass.refreshWithNote();
             }, false);
+            reloadButton.setAttribute("data-event", true);
+        }
 
-            var sortButton = $("span.cloudTitle.bx-sort")[0];
+        var sortButton = $("span.cloudTitle.bx-sort")[0];
+        if (sortButton.getAttribute("data-event") === null) {
             sortButton.addEventListener("click", function(){
                 myClass.$CloudSortAttributeByWeight = !myClass.$CloudSortAttributeByWeight;
                 myClass.refreshWithNote();
             }, false);
-            
-            var filterText = $("input.cloudTitle")[0];
+            sortButton.setAttribute("data-event", true);
+        }
+        
+        var filterText = $("input.cloudTitle")[0];
+        if (filterText.getAttribute("data-event") === null) {
             filterText.addEventListener("input", function(){
                 myClass.updateAttributeCloud();
             }, false);
-
-            this.$buttonHandlerAttached = true;
+            filterText.setAttribute("data-event", true);
         }
     }
     
     async updateAttributeMap(note) {
-        console.log(">updateAttributeMap", note);
+        // console.log(">updateAttributeMap", note);
 
         var filter = [];
         if (CloudFilter && this.$filterMap.has(this.$baseNoteId)) filter = this.$filterMap.get(this.$baseNoteId);
@@ -235,7 +240,7 @@
     }
     
     async filterUpdate() {
-        console.log(">filterUpdate", this.$baseNoteId, api.getActiveContextNote());
+        // console.log(">filterUpdate", this.$baseNoteId, api.getActiveContextNote());
         const myClass = this;
 
         var filter = [];
@@ -311,7 +316,7 @@ const CSS = `
 #cloudBase {
   padding: 10px;
   border-top: 1px solid var(--main-border-color);
-  height: 100%;
+  height: calc(100vh - 115px);
   background-color: var(--input-background-color);
   display: flex;
   flex-direction: column;
